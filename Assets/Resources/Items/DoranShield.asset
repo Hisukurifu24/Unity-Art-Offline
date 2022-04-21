@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72cb9fba911d75540847a7480f8f0738, type: 3}
+  m_Name: DoranShield
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  itemName: Scudo di Doran
+  description: Resti di uno scudo creato da Doran
+  rarity: 4
+  attackDamage: 0
+  abilityPower: 0
+  critChance: 0
+  movementSpeed: 0
+  attackSpeed: 0
+  cooldownReduction: 0
+  hp: 110
+  mana: 0
+  armor: 0
+  magicResistance: 0
+  stats:
+    hp: 110
+    mana: 0
+    ad: 0
+    ap: 0
+    crit: 0
+    armor: 0
+    mr: 0
+    ats: 0
+    ms: 0
+    cdr: 0
