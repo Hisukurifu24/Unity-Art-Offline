@@ -23,8 +23,6 @@ public class Player : MonoBehaviour {
     public float Experience => experience;
     public int Level => level;
 
-    public Dialog dialog;
-
     public bool isAnimating;
     private bool powerUp;
     private bool defPosition;
@@ -212,7 +210,7 @@ public class Player : MonoBehaviour {
         if (!UseMana(50)) {
             return false;
         }
-        dialog.AddText(name + " sta attaccando!", Color.red);
+        FindObjectOfType<BattleManager>().AddLog(name + " sta attaccando!", Color.red);
 
         StartCoroutine(AttackAnimation(enemy));
         defPosition = false;
@@ -220,7 +218,7 @@ public class Player : MonoBehaviour {
         float miss = Random.Range(0, 1f);
         if (miss <= 1 / (enemy.current.ms - current.ms * current.ats / 1000)) {
             //miss
-            dialog.AddText(name + " ha mancato l'attacco!!", Color.white);
+            FindObjectOfType<BattleManager>().AddLog(name + " ha mancato l'attacco!!", Color.white);
             powerUp = false;
             return true; //L'attacco ha funzionato (ma miss)
         }
@@ -228,7 +226,7 @@ public class Player : MonoBehaviour {
         bool crit = false;
         float r = Random.Range(0, 1f);
         if (r <= current.crit / 100) {
-            dialog.AddText("Colpo critico!!", new Color(0.75f, 0, 0));
+            FindObjectOfType<BattleManager>().AddLog("Colpo critico!!", new Color(0.75f, 0, 0));
             crit = true;
         }
         if (IsBuildAd()) {
@@ -246,7 +244,7 @@ public class Player : MonoBehaviour {
             return false;
         }
         StartCoroutine(PowerDefendAnimation());
-        dialog.AddText(name + " si è caricato!", Color.blue);
+        FindObjectOfType<BattleManager>().AddLog(name + " si è caricato!", Color.blue);
 
         defPosition = false;
 
@@ -255,7 +253,7 @@ public class Player : MonoBehaviour {
     }
     public bool Defend() {
         StartCoroutine(PowerDefendAnimation());
-        dialog.AddText(name + " in posizione di difesa!", Color.white);
+        FindObjectOfType<BattleManager>().AddLog(name + " in posizione di difesa!", Color.white);
 
         powerUp = false;
 

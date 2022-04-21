@@ -3,7 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
-    [SerializeField] AudioSource battleMusic;
+
+    public static int ReachedFloor = 1;
+
+    private Item[] allItems;
+    private SpellInfo[] allSpells;
+
+    [SerializeField] private GameObject[] entities;
+
+
+    [SerializeField] private AudioSource bgm;
+    [SerializeField] private AudioSource battleMusic;
 
     #region SINGLETON
     public static GameManager instance = null;
@@ -21,11 +31,6 @@ public class GameManager : MonoBehaviour {
         allItems = Resources.LoadAll<Item>("Items");
         allSpells = Resources.LoadAll<SpellInfo>("Spells");
     }
-
-    public static int CurrentFloor = 1;
-
-    private Item[] allItems;
-    private SpellInfo[] allSpells;
 
     public Item GetItem(string name) {
         foreach (Item i in allItems) {
@@ -55,7 +60,21 @@ public class GameManager : MonoBehaviour {
         return new SpellInfo();
     }
 
+    public GameObject GetEntity(string name) {
+        foreach (GameObject g in entities) {
+            if (g.name == name) {
+                return g;
+            }
+        }
+        return null;
+    }
+
+    private void Start() {
+        DontDestroyOnLoad(transform.gameObject);
+    }
+
     public void StartBattle() {
+        bgm.Stop();
         battleMusic.Play();
         SceneLoader.instance.LoadLevel("Battle");
     }

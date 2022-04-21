@@ -46,6 +46,6 @@ public class BarController : MonoBehaviour {
         //spell2CD.SetValue(p1.GetCurrentCooldown(2));
         //spell3CD.SetValue(p1.GetCurrentCooldown(3));
         //spell4CD.SetValue(p1.GetCurrentCooldown(4));
-        time.text = "Time: " + bm.turnTimeLeft.ToString("F2") + "s";
+        time.text = "Time: " + bm.GetTurnTimeLeft().ToString("F2") + "s";
     }
 }

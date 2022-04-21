@@ -10,14 +10,15 @@ public class BattleManager : MonoBehaviour {
 
     public Player player;
     public Player enemy;
+
     private int turn = 0;
 
-    public bool bossBattle;
+    private bool bossBattle;
 
-    public Dialog dialog;
+    public BattleLog battleLog;
 
     private readonly float defaultTime = 5f;
-    public float turnTimeLeft;
+    private float turnTimeLeft;
 
     private enum Phase {
         Fight,
@@ -36,6 +37,12 @@ public class BattleManager : MonoBehaviour {
     private Action lastPlayerAction;
     private Action lastEnemyAction;
 
+    private void Awake() {
+        string p1 = PlayerPrefs.GetString("player1");
+        string p2 = PlayerPrefs.GetString("player2");
+        Instantiate(GameManager.instance.GetEntity(p1));
+    }
+
     private void Start() {
         /** Old Spell System
         Text[] spellsText = menu2.transform.Find("Spells").GetComponentsInChildren<Text>();
@@ -53,9 +60,6 @@ public class BattleManager : MonoBehaviour {
         enemy.SetEnemy(player);
         */
         turnTimeLeft = defaultTime;
-
-        player.dialog = dialog;
-        enemy.dialog = dialog;
     }
 
     private void Update() {
@@ -141,11 +145,11 @@ public class BattleManager : MonoBehaviour {
                 // Altri effetti?
                 break;
             case Phase.Win:
-                dialog.AddText(player.name + " vince!", Color.black);
-                SceneManager.LoadScene("Floor" + GameManager.CurrentFloor);
+                battleLog.AddText(player.name + " vince!", Color.black);
+                SceneManager.LoadScene("Floor" + GameManager.ReachedFloor);
                 break;
             case Phase.Lose:
-                dialog.AddText(player.name + " perde!", Color.black);
+                battleLog.AddText(player.name + " perde!", Color.black);
                 SceneManager.LoadScene("GameOver");
                 break;
             default:
@@ -159,7 +163,7 @@ public class BattleManager : MonoBehaviour {
             yield return new WaitForSeconds(0.01f);
             turnTimeLeft -= 0.01f;
             if (turnTimeLeft <= 0) {
-                dialog.AddText((turn == 0 ? player.name : enemy.name) + " è stato troppo lento!!!", Color.yellow);
+                battleLog.AddText((turn == 0 ? player.name : enemy.name) + " è stato troppo lento!!!", Color.yellow);
                 currentPhase = Phase.EndTurn;
             }
         }
@@ -185,37 +189,45 @@ public class BattleManager : MonoBehaviour {
         float playerSpeed = player.GetCurrentStats().ats * player.GetCurrentStats().ms;
         float enemySpeed = enemy.GetCurrentStats().ats * enemy.GetCurrentStats().ms;
         if (bossBattle) {
-            dialog.AddText("Non puoi scappare da questa battaglia!", Color.black);
+            battleLog.AddText("Non puoi scappare da questa battaglia!", Color.black);
             yield return new WaitForSeconds(1);
             StartFight();
         }
         if (playerSpeed > enemySpeed) {
-            dialog.AddText(player.name + " sta scappando a gambe levate!", Color.black);
+            battleLog.AddText(player.name + " sta scappando a gambe levate!", Color.black);
             yield return new WaitForSeconds(1);
-            SceneManager.LoadScene("Floor" + GameManager.CurrentFloor);
+            SceneManager.LoadScene("Floor" + GameManager.ReachedFloor);
         }
         else if (enemySpeed > playerSpeed) {
-            dialog.AddText(player.name + " sta provando a fuggire!", Color.black);
+            battleLog.AddText(player.name + " sta provando a fuggire!", Color.black);
             yield return new WaitForSeconds(1);
-            dialog.AddText(enemy.name + ": dove pensavi di andare?", Color.black);
+            battleLog.AddText(enemy.name + ": dove pensavi di andare?", Color.black);
             yield return new WaitForSeconds(1);
             StartFight();
         }
         else {
-            dialog.AddText(player.name + " sta provando a fuggire!", Color.black);
+            battleLog.AddText(player.name + " sta provando a fuggire!", Color.black);
             yield return new WaitForSeconds(1);
             float r = Random.Range(0, 1f);
             if (r < .5f) {
-                dialog.AddText("E ce la fa!", Color.black);
+                battleLog.AddText("E ce la fa!", Color.black);
                 yield return new WaitForSeconds(1);
-                SceneManager.LoadScene("Floor" + GameManager.CurrentFloor);
+                SceneManager.LoadScene("Floor" + GameManager.ReachedFloor);
             }
             else {
-                dialog.AddText("Ma inciampa!!", Color.black);
+                battleLog.AddText("Ma inciampa!!", Color.black);
                 yield return new WaitForSeconds(1);
                 StartFight();
             }
         }
+    }
+
+    public void AddLog(string text, Color c) {
+        battleLog.AddText(text, c);
+    }
+
+    public float GetTurnTimeLeft() {
+        return turnTimeLeft;
     }
 
     public void Menu1(bool run) {
@@ -254,7 +266,7 @@ public class BattleManager : MonoBehaviour {
                 break;
         }
         if (!ok) {
-            dialog.AddText(player.name + " non ha abbastanza mana!", Color.cyan);
+            battleLog.AddText(player.name + " non ha abbastanza mana!", Color.cyan);
             return;
         }
         currentPhase = Phase.Animation;

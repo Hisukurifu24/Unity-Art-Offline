@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Dialog : MonoBehaviour {
+public class BattleLog : MonoBehaviour {
     [SerializeField] private Text[] uiText = new Text[5];
 
     private void Awake() {
