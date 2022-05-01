@@ -10,6 +10,7 @@ public class Player : MonoBehaviour {
     [SerializeField] private List<Item> inventory;
     //[SerializeField] private Spell[] spellbook;
 
+
     [SerializeField] private Stats basic;
     [SerializeField] private Stats current;
     [SerializeField] private Stats bonus;
