@@ -8,5 +8,5 @@ public class Dialog
     public string name;
 
     [TextArea(3, 10)]
-    public string[] senteces;
+    public string[] senteces = new string[1];
 }

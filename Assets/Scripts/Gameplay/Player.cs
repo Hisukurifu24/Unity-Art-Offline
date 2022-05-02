@@ -8,6 +8,7 @@ public class Player : MonoBehaviour {
     [SerializeField] GameObject shield;
 
     [SerializeField] private List<Item> inventory;
+    [SerializeField] private List<Item> bag;
     //[SerializeField] private Spell[] spellbook;
 
 
@@ -17,12 +18,15 @@ public class Player : MonoBehaviour {
 
     [SerializeField] private float experience = 0;
     [SerializeField] private int level = 1;
+    [SerializeField] private int skillPoints = 0;
+    [SerializeField] private int gold = 0;
 
     private float hpReg = 1f;
     private float manaReg = 10f;
 
     public float Experience => experience;
     public int Level => level;
+    public int Gold => gold;
 
     public bool isAnimating;
     private bool powerUp;
@@ -308,6 +312,68 @@ public class Player : MonoBehaviour {
 
     private void Die() {
     }
+
+    private void UpdateBonusStats() {
+        foreach (Item i in inventory) {
+            bonus.hp += i.stats.hp;
+            bonus.mana += i.stats.mana;
+            bonus.ad += i.stats.ad;
+            bonus.ap += i.stats.ap;
+            bonus.crit += i.stats.crit;
+            bonus.armor += i.stats.armor;
+            bonus.mr += i.stats.mr;
+            bonus.ats += i.stats.ats;
+            bonus.ms += i.stats.ms;
+        }
+    }
+
+    public void AddItem(Item i) {
+        if (i == null) {
+            return;
+        }
+        FindObjectOfType<DialogManager>().PromptMessage("Hai ottenuto " + i.itemName + "!");
+        if (inventory.Count < 6) {
+            inventory.Add(i);
+            UpdateBonusStats();
+            FindObjectOfType<DialogManager>().PromptMessage("È stato messo nell'inventario.");
+        }
+        else if (bag.Count < 100) {
+            bag.Add(i);
+            FindObjectOfType<DialogManager>().PromptMessage("È stato messo nella borsa");
+        }
+        else {
+            FindObjectOfType<DialogManager>().PromptMessage("Inventario e borsa pieni!");
+        }
+    }
+
+    public void AddGold(int amount) {
+        amount = Mathf.Clamp(amount, 0, int.MaxValue);
+        gold += amount;
+        gold = Mathf.Clamp(gold, 0, int.MaxValue);
+    }
+    public bool SpendGold(int amount) {
+        amount = Mathf.Clamp(amount, 0, int.MaxValue);
+        if (amount > gold) {
+            return false;
+        }
+        gold -= amount;
+        return true;
+    }
+
+    public void AddExp(int amount) {
+        amount = Mathf.Clamp(amount, 0, int.MaxValue);
+        experience += amount;
+        while (experience >= level * 100) {
+            experience -= level * 100;
+            LevelUp();
+        }
+    }
+    public void LevelUp() {
+        level++;
+        skillPoints += 2;
+        FindObjectOfType<DialogManager>().PromptMessage("Sei salito al livello " + level + "!" +
+            "\nHai " + skillPoints + " Skill Points a disposizione!");
+    }
 }
 
 [System.Serializable]
@@ -321,7 +387,6 @@ public struct Stats {
     public float mr;        //30
     public float ats;       //0.5
     public float ms;        //325
-    public float cdr;       //0
 }
 
 public enum Damage {
