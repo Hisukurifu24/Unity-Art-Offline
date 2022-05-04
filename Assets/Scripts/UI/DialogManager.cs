@@ -77,7 +77,7 @@ public class DialogManager : MonoBehaviour {
         dialogueText.text = "";
         foreach (char c in sentence) {
             dialogueText.text += c;
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.02f);
         }
     }
 }

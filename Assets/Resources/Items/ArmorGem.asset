@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72cb9fba911d75540847a7480f8f0738, type: 3}
   m_Name: ArmorGem
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 200b97da97053d34db0d8f9327bd251d, type: 3}
   itemName: Gemma dell'armatura
-  description: "Una delle 7 gemme dell'infinito.\nGarantisce un'infinita quantit\xE0
+  description: "Una delle 6 gemme dell'infinito.\nGarantisce un'infinita quantit\xE0
     di armatura."
   rarity: 1048676
   stats:
@@ -27,4 +27,3 @@ MonoBehaviour:
     mr: 0
     ats: 0
     ms: 0
-    cdr: 0

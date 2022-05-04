@@ -331,15 +331,14 @@ public class Player : MonoBehaviour {
         if (i == null) {
             return;
         }
-        FindObjectOfType<DialogManager>().PromptMessage("Hai ottenuto " + i.itemName + "!");
         if (inventory.Count < 6) {
             inventory.Add(i);
             UpdateBonusStats();
-            FindObjectOfType<DialogManager>().PromptMessage("» stato messo nell'inventario.");
+            FindObjectOfType<DialogManager>().PromptMessage("Hai ottenuto " + i.itemName + "!\n» stato messo nell'inventario.");
         }
         else if (bag.Count < 100) {
             bag.Add(i);
-            FindObjectOfType<DialogManager>().PromptMessage("» stato messo nella borsa");
+            FindObjectOfType<DialogManager>().PromptMessage("Hai ottenuto " + i.itemName + "!\n» stato messo nella borsa.");
         }
         else {
             FindObjectOfType<DialogManager>().PromptMessage("Inventario e borsa pieni!");
@@ -373,6 +372,18 @@ public class Player : MonoBehaviour {
         skillPoints += 2;
         FindObjectOfType<DialogManager>().PromptMessage("Sei salito al livello " + level + "!" +
             "\nHai " + skillPoints + " Skill Points a disposizione!");
+    }
+
+    public Item GetInventoryItem(int i) {
+        return i < inventory.Count ? inventory[i] : null;
+    }
+    public Item GetBagItem(int i) {
+        return i < bag.Count ? bag[i] : null;
+    }
+    public void Swap(int invIndex, int bagIndex) {
+        Item i = bag[bagIndex];
+        bag[bagIndex] = inventory[invIndex];
+        inventory[invIndex] = i;
     }
 }
 
