@@ -16,6 +16,7 @@ public class InventoryUI : MonoBehaviour {
     }
 
     private void Start() {
+        /*
         player.AddItem(GameManager.instance.GetRandomItem());
         player.AddItem(GameManager.instance.GetRandomItem());
         player.AddItem(GameManager.instance.GetRandomItem());
@@ -36,6 +37,7 @@ public class InventoryUI : MonoBehaviour {
         player.AddItem(GameManager.instance.GetRandomItem());
         player.AddItem(GameManager.instance.GetRandomItem());
         player.AddItem(GameManager.instance.GetRandomItem());
+        */
     }
 
     private void Update() {
