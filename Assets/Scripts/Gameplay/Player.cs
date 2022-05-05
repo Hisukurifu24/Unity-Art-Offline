@@ -36,10 +36,10 @@ public class Player : MonoBehaviour {
     private void Awake() {
         //spellbook = new Spell[5];
         //LearnSpell<BaseAttack>();
+        current = basic;
     }
 
     private void Start() {
-        current = basic;
 
         StartCoroutine(RegenHealth());
         StartCoroutine(RegenMana());
@@ -314,6 +314,7 @@ public class Player : MonoBehaviour {
     }
 
     private void UpdateBonusStats() {
+        bonus = new Stats();
         foreach (Item i in inventory) {
             bonus.hp += i.stats.hp;
             bonus.mana += i.stats.mana;
@@ -325,6 +326,15 @@ public class Player : MonoBehaviour {
             bonus.ats += i.stats.ats;
             bonus.ms += i.stats.ms;
         }
+        current.hp += bonus.hp;
+        current.mana += bonus.mana;
+        current.ad += bonus.ad;
+        current.ap += bonus.ap;
+        current.crit += bonus.crit;
+        current.armor += bonus.armor;
+        current.mr += bonus.mr;
+        current.ats += bonus.ats;
+        current.ms += bonus.ms;
     }
 
     public void AddItem(Item i) {
