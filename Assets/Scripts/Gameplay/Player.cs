@@ -40,7 +40,6 @@ public class Player : MonoBehaviour {
     }
 
     private void Start() {
-
         StartCoroutine(RegenHealth());
         StartCoroutine(RegenMana());
     }
@@ -223,7 +222,7 @@ public class Player : MonoBehaviour {
         float miss = Random.Range(0, 1f);
         if (miss <= 1 / (enemy.current.ms - current.ms * current.ats / 1000)) {
             //miss
-            FindObjectOfType<BattleManager>().AddLog(name + " ha mancato l'attacco!!", Color.white);
+            FindObjectOfType<BattleManager>().AddLog(name + " ha mancato l'attacco!!", Color.grey);
             powerUp = false;
             return true; //L'attacco ha funzionato (ma miss)
         }
@@ -283,7 +282,7 @@ public class Player : MonoBehaviour {
         isAnimating = true;
         Vector3 currentPosition = transform.position; //Save current position
 
-        bool goRight = GetComponent<PlayerController>();
+        bool goRight = gameObject.tag == "Player";
         Vector3 moveCommand = goRight ? Vector3.right : Vector3.left;
         float speed = Mathf.Clamp(current.ms * current.ats, 500, float.MaxValue);
         Vector3 movement = speed * Time.deltaTime * moveCommand;

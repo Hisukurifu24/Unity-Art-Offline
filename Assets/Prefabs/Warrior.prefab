@@ -112,8 +112,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5217370445768499680}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7, y: -4, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 7, y: -3.5, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children:
   - {fileID: 5217370446741144988}
   - {fileID: 5179560103584925564}
@@ -237,7 +237,8 @@ AudioSource:
   m_GameObject: {fileID: 5217370445768499680}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 243586827444500310, guid: 757bde2b477994d60bfff9141343ce02, type: 2}
+  OutputAudioMixerGroup: {fileID: 243586827444500310, guid: 757bde2b477994d60bfff9141343ce02,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -339,17 +340,17 @@ MonoBehaviour:
   aura: {fileID: 5486502297418937148}
   shield: {fileID: 3527252274601046909}
   inventory: []
+  bag: []
   basic:
-    hp: 250
-    mana: 100
-    ad: 30
+    hp: 500
+    mana: 200
+    ad: 60
     ap: 0
     crit: 0
-    armor: 15
-    mr: 15
+    armor: 30
+    mr: 30
     ats: 1
-    ms: 300
-    cdr: 0
+    ms: 325
   current:
     hp: 0
     mana: 0
@@ -360,7 +361,6 @@ MonoBehaviour:
     mr: 0
     ats: 0
     ms: 0
-    cdr: 0
   bonus:
     hp: 0
     mana: 0
@@ -371,9 +371,10 @@ MonoBehaviour:
     mr: 0
     ats: 0
     ms: 0
-    cdr: 0
   experience: 0
   level: 1
+  skillPoints: 0
+  gold: 0
   isAnimating: 0
 --- !u!1 &5217370446741144991
 GameObject:

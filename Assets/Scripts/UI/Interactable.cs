@@ -5,6 +5,8 @@ using UnityEngine;
 public class Interactable : MonoBehaviour
 {
     public Dialog dialog;
+    public bool battle;
+    public string enemyName;
     public Reward reward;
 
     public void TriggerDialog()
@@ -13,13 +15,23 @@ public class Interactable : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
+        Debug.Log("asddd");
         TriggerDialog();
-        collision.GetComponent<Player>().AddItem(reward.item);
-        collision.GetComponent<Player>().AddGold(reward.gold);
-        collision.GetComponent<Player>().AddExp(reward.exp);
+        if (!battle) {
+            collision.GetComponent<Player>().AddItem(reward.item);
+            collision.GetComponent<Player>().AddGold(reward.gold);
+            collision.GetComponent<Player>().AddExp(reward.exp);
+        }
+    }
+
+    public void TriggerBattle() {
+        if (battle) {
+            GameManager.instance.StartBattle(enemyName);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        FindObjectOfType<DialogManager>().EndDialog();
+        Debug.Log("che ci faccio qui");
+        FindObjectOfType<DialogManager>().Interrupt();
     }
 }

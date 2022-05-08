@@ -73,7 +73,8 @@ public class GameManager : MonoBehaviour {
         DontDestroyOnLoad(transform.gameObject);
     }
 
-    public void StartBattle() {
+    public void StartBattle(string enemyName) {
+        PlayerPrefs.SetString("enemyName", enemyName);
         bgm.Stop();
         battleMusic.Play();
         SceneLoader.instance.LoadLevel("Battle");

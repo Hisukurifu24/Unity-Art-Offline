@@ -19,6 +19,7 @@ public class BattleManager : MonoBehaviour {
 
     private readonly float defaultTime = 5f;
     private float turnTimeLeft;
+    private bool timePaused;
 
     private enum Phase {
         Fight,
@@ -38,9 +39,12 @@ public class BattleManager : MonoBehaviour {
     private Action lastEnemyAction;
 
     private void Awake() {
-        string p1 = PlayerPrefs.GetString("player1");
-        string p2 = PlayerPrefs.GetString("player2");
-        Instantiate(GameManager.instance.GetEntity(p1));
+        GameObject p1 = GameManager.instance.GetEntity("Character");
+        p1.name = "Character";
+        GameObject p2 = GameManager.instance.GetEntity(PlayerPrefs.GetString("enemyName"));
+        p2.name = GameManager.instance.GetEntity(PlayerPrefs.GetString("enemyName")).name;
+        player = Instantiate(p1).GetComponent<Player>();
+        enemy = Instantiate(p2).GetComponent<Player>();
     }
 
     private void Start() {
@@ -92,7 +96,8 @@ public class BattleManager : MonoBehaviour {
                         lastEnemyAction = Action.Attack;
                     }
                     else {
-                        if (ok = enemy.PowerUp()) {
+                        if (enemy.GetCurrentStats().mana >= 150) {
+                            ok = enemy.PowerUp();
                             lastEnemyAction = Action.PowerUp;
                         }
                         else if (player.GetCurrentStats().hp < enemy.GetCurrentStats().hp) {
@@ -140,7 +145,7 @@ public class BattleManager : MonoBehaviour {
                 timeReduction = Mathf.Clamp(timeReduction, 0, defaultTime-0.25f);
                 turnTimeLeft = defaultTime - timeReduction;
 
-                StartCoroutine(TurnTime());
+                ResumeTime();
                 currentPhase = Phase.Fight;
                 // Altri effetti?
                 break;
@@ -161,7 +166,9 @@ public class BattleManager : MonoBehaviour {
     private IEnumerator TurnTime() {
         while (true) {
             yield return new WaitForSeconds(0.01f);
-            turnTimeLeft -= 0.01f;
+            if (!timePaused) {
+                turnTimeLeft -= 0.01f;
+            }
             if (turnTimeLeft <= 0) {
                 battleLog.AddText((turn == 0 ? player.name : enemy.name) + " è stato troppo lento!!!", Color.yellow);
                 currentPhase = Phase.EndTurn;
@@ -169,8 +176,10 @@ public class BattleManager : MonoBehaviour {
         }
     }
     private void PauseTime() {
-        //StopCoroutine(TurnTime());
-        StopAllCoroutines();
+        timePaused = true;
+    }
+    private void ResumeTime() {
+        timePaused = false;
     }
 
     private void StartFight() {

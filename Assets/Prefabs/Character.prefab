@@ -96,11 +96,10 @@ GameObject:
   - component: {fileID: 2658825818382715423}
   - component: {fileID: 7596404343769338029}
   - component: {fileID: 8209782319432003487}
-  - component: {fileID: 2108683487525389331}
   - component: {fileID: 1157526048531595494}
   m_Layer: 0
   m_Name: Character
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -113,8 +112,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2658825818382715418}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1, y: 4.33, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -7, y: -3.5, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children:
   - {fileID: 2658825819623878246}
   - {fileID: 3125682041073888390}
@@ -280,23 +279,6 @@ MonoBehaviour:
   skillPoints: 0
   gold: 0
   isAnimating: 0
---- !u!114 &2108683487525389331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2658825818382715418}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05e2748c449f70f47845912e60aebb9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  footsteps:
-  - {fileID: 8300000, guid: b9f95e88528322d45ab468493fda9ea6, type: 3}
-  - {fileID: 8300000, guid: 354e3255e5315484d92e71b81aea53e4, type: 3}
-  - {fileID: 8300000, guid: 8c2653fdb3b7ed14b81e093ec9edf966, type: 3}
-  footstepSource: {fileID: 1157526048531595494}
 --- !u!82 &1157526048531595494
 AudioSource:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class DialogManager : MonoBehaviour {
     public Animator animator;
@@ -11,6 +12,8 @@ public class DialogManager : MonoBehaviour {
 
     private Queue<string> sentences;
     private Queue<Dialog> dialogs;
+
+    [SerializeField] private UnityEvent dialogFinished;
 
     private void Awake() {
         sentences = new Queue<string>();
@@ -56,7 +59,8 @@ public class DialogManager : MonoBehaviour {
 
     public void DisplayNextSentence() {
         if (sentences.Count == 0) {
-            EndDialog();
+            dialogFinished.Invoke();
+            NextDialog();
             return;
         }
 
@@ -65,12 +69,17 @@ public class DialogManager : MonoBehaviour {
         StartCoroutine(TypeSentence(s));
     }
 
-    public void EndDialog() {
+    public void NextDialog() {
         animator.SetBool("IsOpen", false);
         if (dialogs.Count == 0) {
             return;
         }
         StartDialog(dialogs.Dequeue());
+    }
+
+    public void Interrupt() {
+        animator.SetBool("IsOpen", false);
+        dialogs.Clear();
     }
 
     private IEnumerator TypeSentence(string sentence) {

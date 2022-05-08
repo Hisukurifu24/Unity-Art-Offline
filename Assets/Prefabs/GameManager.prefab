@@ -42,7 +42,8 @@ AudioSource:
   m_GameObject: {fileID: 2363890963187980370}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 243130672931075838, guid: 757bde2b477994d60bfff9141343ce02, type: 2}
+  OutputAudioMixerGroup: {fileID: 243130672931075838, guid: 757bde2b477994d60bfff9141343ce02,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: c6b1e4491dcc9de4dad8102c76c2b05e, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -138,7 +139,8 @@ AudioSource:
   m_GameObject: {fileID: 2363890963187980370}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 243586827444500310, guid: 757bde2b477994d60bfff9141343ce02, type: 2}
+  OutputAudioMixerGroup: {fileID: 243586827444500310, guid: 757bde2b477994d60bfff9141343ce02,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 0ef4e7614cd56584fbbd1f5b8e7f6f6e, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -238,7 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entities:
-  - {fileID: 4989919429722442770, guid: 3806fea24d2226642a7a3d62a7998f19, type: 3}
+  - {fileID: 2658825818382715418, guid: 3806fea24d2226642a7a3d62a7998f19, type: 3}
   - {fileID: 5217370445768499680, guid: 662084bf90eaaad4585ecd436ad25bec, type: 3}
   bgm: {fileID: 2363890963187980369}
   battleMusic: {fileID: 2363890963187980374}

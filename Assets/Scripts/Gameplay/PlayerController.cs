@@ -38,9 +38,9 @@ public class PlayerController : MonoBehaviour {
         float moveX = horInput;
         float moveY = verInput;
         moveCommand = new Vector3(moveX, moveY, 0);
-        UpdateAnimator(moveCommand);
-        Vector3 movement = moveCommand * speed * Time.deltaTime;
-        
+        Vector3 movement = speed * Time.deltaTime * moveCommand;
+        UpdateAnimator(movement);
+
         rb.MovePosition(transform.position + movement);
         spriteRenderer.flipX = moveCommand.x >= 0 ? true : false;
 
