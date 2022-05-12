@@ -10,16 +10,14 @@ public class PlayerController : MonoBehaviour {
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
-    private Vector3 moveCommand;
-    private float horInput;
-    private float verInput;
-    private float speed;
+    [HideInInspector] public Vector2 moveCommand;
+    [HideInInspector] public float speed;
 
     private void Start() {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        speed = GetComponent<Player>().GetCurrentStats().ms / 100;
+        speed = GetComponent<Player>().GetCurrentStats().ms / 10;
     }
 
     private void Update() {
@@ -32,19 +30,17 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        horInput = Input.GetAxis("Horizontal");
-        verInput = Input.GetAxis("Vertical");
+        moveCommand = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        Vector2 movement = speed * Time.fixedDeltaTime * moveCommand;
 
-        float moveX = horInput;
-        float moveY = verInput;
-        moveCommand = new Vector3(moveX, moveY, 0);
-        Vector3 movement = speed * Time.deltaTime * moveCommand;
         UpdateAnimator(movement);
 
-        rb.MovePosition(transform.position + movement);
+        rb.velocity += movement;
+        //rb.MovePosition((Vector2)transform.position + movement);
+
         spriteRenderer.flipX = moveCommand.x >= 0 ? true : false;
 
-        if(moveCommand != Vector3.zero) {
+        if(moveCommand != Vector2.zero) {
             //Character is moving
             if (!footstepSource.isPlaying) {
                 footstepSource.clip = footsteps[Random.Range(0, footsteps.Length)];
@@ -53,7 +49,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    private void UpdateAnimator(Vector3 direction) {
+    private void UpdateAnimator(Vector2 direction) {
         if (animator) {
             if (animator.GetInteger("WalkY")==0)
                 animator.SetInteger("WalkX", direction.x < 0 ? -1 : direction.x > 0 ? 1 : 0);

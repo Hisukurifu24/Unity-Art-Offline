@@ -45,8 +45,8 @@ public class Player : MonoBehaviour {
     }
 
     private void Update() {
-        aura.SetActive(powerUp);
-        shield.SetActive(defPosition);
+        //aura.SetActive(powerUp);
+        //shield.SetActive(defPosition);
     }
 
     private IEnumerator RegenHealth() {
