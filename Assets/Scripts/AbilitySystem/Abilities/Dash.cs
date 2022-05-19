@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
-public class Dash : Ability
-{
-    public float dashVelocity;
+public class Dash : Ability {
+    float dashVelocity;
+    PlayerController p;
+    Rigidbody2D rb;
 
-    public override void Activate(GameObject parent) {
-        PlayerController p = parent.GetComponent<PlayerController>();
-        Rigidbody2D rb = parent.GetComponent<Rigidbody2D>();
+    private void Start() {
+        dashVelocity = 50;
+        p = GetComponent<PlayerController>();
+        rb = GetComponent<Rigidbody2D>();
+    }
 
-        Debug.Log("BLINK");
-        Debug.Log(p.moveCommand * dashVelocity);
+    public override void Activate() {
         rb.AddForce(p.moveCommand * dashVelocity, ForceMode2D.Impulse);
     }
+
+    public override void BeginCooldown() { }
 }

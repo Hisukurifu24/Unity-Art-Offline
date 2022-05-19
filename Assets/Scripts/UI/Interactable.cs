@@ -15,12 +15,13 @@ public class Interactable : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        Debug.Log("asddd");
-        TriggerDialog();
-        if (!battle) {
-            collision.GetComponent<Player>().AddItem(reward.item);
-            collision.GetComponent<Player>().AddGold(reward.gold);
-            collision.GetComponent<Player>().AddExp(reward.exp);
+        if (collision.tag == "Player") {
+            TriggerDialog();
+            if (!battle) {
+                collision.GetComponent<Player>().AddItem(reward.item);
+                collision.GetComponent<Player>().AddGold(reward.gold);
+                collision.GetComponent<Player>().AddExp(reward.exp);
+            }
         }
     }
 
@@ -31,7 +32,8 @@ public class Interactable : MonoBehaviour
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        Debug.Log("che ci faccio qui");
-        FindObjectOfType<DialogManager>().Interrupt();
+        if (collision.CompareTag("Player")) {
+            FindObjectOfType<DialogManager>().Interrupt();
+        }
     }
 }
