@@ -13,14 +13,8 @@ public class ProgressBar : MonoBehaviour {
         slider = GetComponent<Slider>();
     }
 
-    public void SetTargetValue(float target) {
-        targetValue = target;
-    }
-    public void SetValue(float value) {
-        currentValue = value;
-    }
-
-    private void Update() {
-        slider.value = currentValue / targetValue;
+    public void SetValues(float value, float maxValue) {
+        slider.value = value;
+        slider.maxValue = maxValue;
     }
 }

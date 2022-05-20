@@ -199,6 +199,9 @@ public class Player : MonoBehaviour {
     public float GetMaxMana() {
         return basic.mana + bonus.mana;
     }
+    public float GetMaxExp() {
+        return level * 100;
+    }
 
     public Stats GetBaseStats() {
         return basic;
@@ -368,19 +371,31 @@ public class Player : MonoBehaviour {
         return true;
     }
 
+    private IEnumerator AddingExp(float amount) {
+        bool leveledUp = false;
+        while (amount > 0) {
+            experience++;
+            amount--;
+            if (experience >= GetMaxExp()) {
+                experience -= GetMaxExp();
+                leveledUp = true;
+                LevelUp();
+            }
+            yield return null;
+        }
+        if (leveledUp) {
+            FindObjectOfType<DialogManager>().PromptMessage("Sei salito al livello " + level + "!" +
+                "\nHai " + skillPoints + " Skill Points a disposizione!");
+        }
+    }
     public void AddExp(int amount) {
         amount = Mathf.Clamp(amount, 0, int.MaxValue);
-        experience += amount;
-        while (experience >= level * 100) {
-            experience -= level * 100;
-            LevelUp();
-        }
+        //FindObjectOfType<DialogManager>().PromptMessage("Hai guadagnato " + amount + " punti esperienza!");
+        StartCoroutine(AddingExp(amount));
     }
     public void LevelUp() {
         level++;
         skillPoints += 2;
-        FindObjectOfType<DialogManager>().PromptMessage("Sei salito al livello " + level + "!" +
-            "\nHai " + skillPoints + " Skill Points a disposizione!");
     }
 
     public Item GetInventoryItem(int i) {
