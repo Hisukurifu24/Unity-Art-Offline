@@ -373,16 +373,29 @@ public class Player : MonoBehaviour {
 
     private IEnumerator AddingExp(float amount) {
         bool leveledUp = false;
-        while (amount > 0) {
-            experience++;
-            amount--;
-            if (experience >= GetMaxExp()) {
+
+        if (amount > 10000) {
+            //Skip Animation
+            experience += amount;
+            while (experience >= GetMaxExp()) {
                 experience -= GetMaxExp();
                 leveledUp = true;
                 LevelUp();
             }
-            yield return null;
         }
+        else {
+            while (amount > 0) {
+                experience++;
+                amount--;
+                if (experience >= GetMaxExp()) {
+                    experience -= GetMaxExp();
+                    leveledUp = true;
+                    LevelUp();
+                }
+                yield return null;
+            }
+        }
+
         if (leveledUp) {
             FindObjectOfType<DialogManager>().PromptMessage("Sei salito al livello " + level + "!" +
                 "\nHai " + skillPoints + " Skill Points a disposizione!");
