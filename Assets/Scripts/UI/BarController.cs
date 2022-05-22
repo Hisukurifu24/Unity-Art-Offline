@@ -8,6 +8,7 @@ public class BarController : MonoBehaviour {
     [SerializeField] private ProgressBar expBar;
     [SerializeField] private Text lvl;
     [SerializeField] private Text exp;
+    [SerializeField] private Text gold;
 
     private void Update() {
         healthBar.SetValues(p.GetCurrentStats().hp, p.GetMaxHp());
@@ -15,5 +16,6 @@ public class BarController : MonoBehaviour {
         expBar.SetValues(p.Experience, p.GetMaxExp());
         lvl.text = "Level: " + p.Level;
         exp.text = "Exp: " + p.Experience + "/" + p.GetMaxExp();
+        gold.text = "Gold: " + p.Gold;
     }
 }
