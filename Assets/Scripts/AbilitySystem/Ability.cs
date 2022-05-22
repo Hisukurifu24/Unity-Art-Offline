@@ -20,7 +20,7 @@ public abstract class Ability : MonoBehaviour {
 
     public KeyCode key;
 
-    private void Awake() {
+    protected virtual void Awake() {
         abilities = Resources.LoadAll<AbilityData>("Abilities");
         data = GetAbilityData(GetType().ToString());
     }

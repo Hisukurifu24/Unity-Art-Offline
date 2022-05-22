@@ -21,6 +21,8 @@ public class Player : MonoBehaviour {
     [SerializeField] private int skillPoints = 0;
     [SerializeField] private int gold = 0;
 
+    public string whatIsEnemy;
+
     private float hpReg = 1f;
     private float manaReg = 10f;
 
@@ -32,11 +34,25 @@ public class Player : MonoBehaviour {
     private bool powerUp;
     private bool defPosition;
 
+    private Animator animator;
+
+    private AudioSource audioSource;
+    private AudioClip[] hit = new AudioClip[2];
+    private AudioClip death;
+
+
 
     private void Awake() {
         //spellbook = new Spell[5];
         //LearnSpell<BaseAttack>();
         current = basic;
+
+        animator = GetComponent<Animator>();
+
+        audioSource = GetComponent<AudioSource>();
+        hit[0] = Resources.Load<AudioClip>("Sounds/GruntVoice01");
+        hit[1] = Resources.Load<AudioClip>("Sounds/GruntVoice02");
+        death = Resources.Load<AudioClip>("Sounds/DeathVoice");
     }
 
     private void Start() {
@@ -62,7 +78,26 @@ public class Player : MonoBehaviour {
         }
     }
 
+    private void Die() {
+        audioSource.clip = death;
+        audioSource.Play();
+        animator.SetTrigger("Dead");
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        GetComponent<CircleCollider2D>().enabled = false;
+        Destroy(gameObject, 2);
+    }
+    private IEnumerator Hit() {
+        audioSource.clip = hit[Random.Range(0, 2)];
+        audioSource.Play();
+        GetComponent<SpriteRenderer>().color = Color.red;
+
+        yield return new WaitForSeconds(0.1f);
+
+        GetComponent<SpriteRenderer>().color = Color.white;
+
+    }
     public void TakeDamage(float amount, Damage type) {
+        StartCoroutine(Hit());
         amount = Mathf.Clamp(amount, 0, float.MaxValue);
         float damage = 0;
         switch (type) {
@@ -80,8 +115,8 @@ public class Player : MonoBehaviour {
         current.hp -= damage;
         current.hp = Mathf.Clamp(current.hp, 0, GetMaxHp());
         if (current.hp == 0) {
-            //Die
             Debug.Log(name + " died");
+            Die();
         }
         defPosition = false;
     }
@@ -312,8 +347,6 @@ public class Player : MonoBehaviour {
         isAnimating = false;
     }
 
-    private void Die() {
-    }
 
     private void UpdateBonusStats() {
         bonus = new Stats();
@@ -357,10 +390,18 @@ public class Player : MonoBehaviour {
         }
     }
 
+    private IEnumerator AddingGold(int amount) {
+        float speed = 2 / (float)amount;
+        while (amount > 0) {
+            gold++;
+            amount--;
+            yield return new WaitForSeconds(speed);
+        }
+        gold = Mathf.Clamp(gold, 0, int.MaxValue);
+    }
     public void AddGold(int amount) {
         amount = Mathf.Clamp(amount, 0, int.MaxValue);
-        gold += amount;
-        gold = Mathf.Clamp(gold, 0, int.MaxValue);
+        StartCoroutine(AddingGold(amount));
     }
     public bool SpendGold(int amount) {
         amount = Mathf.Clamp(amount, 0, int.MaxValue);
@@ -374,26 +415,16 @@ public class Player : MonoBehaviour {
     private IEnumerator AddingExp(float amount) {
         bool leveledUp = false;
 
-        if (amount > 10000) {
-            //Skip Animation
-            experience += amount;
-            while (experience >= GetMaxExp()) {
+        float speed = 1 / amount;
+        while (amount > 0) {
+            experience++;
+            amount--;
+            if (experience >= GetMaxExp()) {
                 experience -= GetMaxExp();
                 leveledUp = true;
                 LevelUp();
             }
-        }
-        else {
-            while (amount > 0) {
-                experience++;
-                amount--;
-                if (experience >= GetMaxExp()) {
-                    experience -= GetMaxExp();
-                    leveledUp = true;
-                    LevelUp();
-                }
-                yield return null;
-            }
+            yield return new WaitForSeconds(speed);
         }
 
         if (leveledUp) {

@@ -16654,6 +16654,7 @@ MonoBehaviour:
   level: 1
   skillPoints: 0
   gold: 0
+  whatIsEnemy: Enemy
   isAnimating: 0
 --- !u!224 &579226572531241817
 RectTransform:
@@ -17379,6 +17380,7 @@ MonoBehaviour:
   level: 1
   skillPoints: 1
   gold: 0
+  whatIsEnemy: Player
   isAnimating: 0
 --- !u!95 &3626908786139782950
 Animator:

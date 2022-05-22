@@ -11,10 +11,17 @@ public class Punch : Ability {
     private bool leftPunch;
     private float swingSpeed;
     private float duration;
+    private Player p;
 
-    private void Start() {
+    protected override void Awake() {
+        base.Awake();
         punchPrefab = Resources.Load<GameObject>("Abilities/Prefabs/Punch");
         hitSound = Resources.Load<AudioClip>("Sounds/Hit");
+    }
+
+    private void Start() {
+        data.cooldownTime = 0.1f / GetComponentInParent<Player>().GetCurrentStats().ats;
+        p = GetComponentInParent<Player>();
         leftPunch = false;
         swingSpeed = 1000;
         duration = data.activeTime;
@@ -51,10 +58,10 @@ public class Punch : Ability {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.CompareTag("Enemy") && !collision.isTrigger) {
+        if (collision.CompareTag(p.whatIsEnemy) && !collision.isTrigger) {
             GetComponent<AudioSource>().clip = hitSound;
             GetComponent<AudioSource>().Play();
-            Destroy(collision.gameObject);
+            collision.GetComponent<Player>().TakeDamage(p.GetCurrentStats().ad, Damage.Physical);
         }
     }
 }
