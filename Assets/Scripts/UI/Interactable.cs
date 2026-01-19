@@ -9,30 +9,48 @@ public class Interactable : MonoBehaviour
     public string enemyName;
     public Reward reward;
 
+    private bool interacted = false;
+    private Player player;
+
     public void TriggerDialog()
     {
-        FindObjectOfType<DialogManager>().StartDialog(dialog);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.tag == "Player") {
-            TriggerDialog();
-            if (!battle) {
-                collision.GetComponent<Player>().AddItem(reward.item);
-                collision.GetComponent<Player>().AddGold(reward.gold);
-                collision.GetComponent<Player>().AddExp(reward.exp);
-            }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("Trigger Entered");
+        if (collision.tag == "Player" && !interacted)
+        {
+            interacted = true;
+            player = collision.GetComponent<Player>();
+            FindObjectOfType<DialogManager>().StartDialog(dialog);
+            FindObjectOfType<DialogManager>().onDialogEnded.AddListener(GiveReward);
         }
     }
 
+    private void GiveReward()
+    {
+        FindObjectOfType<DialogManager>().onDialogEnded.RemoveListener(GiveReward);
+        foreach (Item i in reward.items)
+        {
+            player.AddItem(i);
+        }
+        player.AddGold(reward.gold);
+        player.AddExp(reward.exp);
+    }
+
+    /*
     public void TriggerBattle() {
         if (battle) {
             GameManager.instance.StartBattle(enemyName);
         }
     }
+    */
 
-    private void OnTriggerExit2D(Collider2D collision) {
-        if (collision.CompareTag("Player")) {
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
             FindObjectOfType<DialogManager>().Interrupt();
         }
     }

@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour {
+    public UnityEvent onOpened;
+    public UnityEvent onClosed;
+
     private Animator animator;
     [SerializeField] ToggleGroup inventoryGroup;
     [SerializeField] ToggleGroup bagGroup;
@@ -16,7 +20,10 @@ public class InventoryUI : MonoBehaviour {
     }
 
     private void Start() {
-        /*
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        onOpened.AddListener(player.SetUnavailable);
+        onClosed.AddListener(player.SetAvailable);
+        /**
         player.AddItem(GameManager.instance.GetRandomItem());
         player.AddItem(GameManager.instance.GetRandomItem());
         player.AddItem(GameManager.instance.GetRandomItem());
@@ -42,7 +49,12 @@ public class InventoryUI : MonoBehaviour {
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.I)) {
-            OpenClose();
+            if (animator.GetBool("IsOpen")) {
+                Close();
+            }
+            else {
+                Open();
+            }
         }
         UpdateUI();
     }
@@ -82,8 +94,13 @@ public class InventoryUI : MonoBehaviour {
         bagGroup.transform.Find("SwitchPage").GetComponentInChildren<Text>().text = "Page: " + (currentPage + 1) + "/10";
     }
 
-    public void OpenClose() {
-        animator.SetBool("IsOpen", !animator.GetBool("IsOpen"));
+    public void Open() {
+        animator.SetBool("IsOpen", true);
+        onOpened.Invoke();
+    }
+    public void Close() {
+        animator.SetBool("IsOpen", false);
+        onClosed.Invoke();
     }
 
     public void NextPage() {

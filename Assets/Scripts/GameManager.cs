@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour {
                 return i;
             }
         }
+        Debug.LogError("Oggetto " + name + " non trovato");
         return null;
     }
 

@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour {
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
+    private bool canMove = true;
+
     [HideInInspector] public Vector2 moveCommand;
     [HideInInspector] public float speed;
 
@@ -17,34 +19,26 @@ public class PlayerController : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        speed = GetComponent<Player>().GetCurrentStats().ms / 10;
-    }
-
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.LeftShift)) {
-            speed *= 1.5f;
-        }
-        if (Input.GetKeyUp(KeyCode.LeftShift)) {
-            speed /= 1.5f;
-        }
+        speed = GetComponent<Player>().GetCurrentStat(Stat.MovementSpeed) / 10;
     }
 
     private void FixedUpdate() {
-        moveCommand = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         Vector2 movement = speed * Time.fixedDeltaTime * moveCommand;
-
         UpdateAnimator(movement);
+        if (canMove) {
+            moveCommand = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        rb.velocity += movement;
-        //rb.MovePosition((Vector2)transform.position + movement);
+            rb.velocity += movement;
+            //rb.MovePosition((Vector2)transform.position + movement);
 
-        spriteRenderer.flipX = moveCommand.x >= 0 ? true : false;
+            spriteRenderer.flipX = moveCommand.x >= 0 ? true : false;
 
-        if(moveCommand != Vector2.zero) {
-            //Character is moving
-            if (!footstepSource.isPlaying) {
-                footstepSource.clip = footsteps[Random.Range(0, footsteps.Length)];
-                footstepSource.Play();
+            if (moveCommand != Vector2.zero) {
+                //Character is moving
+                if (!footstepSource.isPlaying) {
+                    footstepSource.clip = footsteps[Random.Range(0, footsteps.Length)];
+                    footstepSource.Play();
+                }
             }
         }
     }
@@ -56,5 +50,12 @@ public class PlayerController : MonoBehaviour {
             if(animator.GetInteger("WalkX") == 0)
                 animator.SetInteger("WalkY", direction.y < 0 ? 1 : direction.y > 0 ? -1 : 0);
         }
+    }
+
+    public void BlockPlayer() {
+        canMove = false;
+    }
+    public void UnlockPlayer() {
+        canMove = true;
     }
 }

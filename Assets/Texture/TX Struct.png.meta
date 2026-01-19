@@ -147,7 +147,7 @@ TextureImporter:
       213: 7791201459673095574
     second: TX Struct_58
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -164,10 +164,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -206,6 +208,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -221,6 +225,30 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -1308,9 +1336,57 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      TX Struct_0: -5380237423685108026
+      TX Struct_1: 141675554456027117
+      TX Struct_10: -8057005470267399406
+      TX Struct_12: 5155980111656350350
+      TX Struct_13: 8997360649946627436
+      TX Struct_14: 6375610903019473629
+      TX Struct_15: -7409667131368046167
+      TX Struct_16: 3043689175084887285
+      TX Struct_17: 1322749239958643334
+      TX Struct_19: -6030128963436766697
+      TX Struct_2: 5869078902113103909
+      TX Struct_20: 1458007723756695542
+      TX Struct_22: -3986661703559434763
+      TX Struct_23: 4947340835078562123
+      TX Struct_24: 3878755357965994487
+      TX Struct_25: -2003205947841038977
+      TX Struct_26: 7153019959695692868
+      TX Struct_27: 1912307677323963068
+      TX Struct_29: 2038046473662129548
+      TX Struct_3: -7381738133999487609
+      TX Struct_30: -9118984358455603272
+      TX Struct_32: 7355977452911014731
+      TX Struct_33: -6928897133297042792
+      TX Struct_34: 1223691023975565623
+      TX Struct_35: -683485447469943986
+      TX Struct_36: -8050778213421618415
+      TX Struct_37: 5670913751284920074
+      TX Struct_39: 8151066665047068254
+      TX Struct_4: -510105923369629673
+      TX Struct_40: 1995557854071872862
+      TX Struct_42: -1113791728614336061
+      TX Struct_43: -4135936408081541678
+      TX Struct_44: -2704191661376495424
+      TX Struct_45: -9188048946803423782
+      TX Struct_46: 4635552159657376372
+      TX Struct_47: 1587341727913103397
+      TX Struct_49: -4860472860002704513
+      TX Struct_5: -2677049488981355681
+      TX Struct_50: -2337336502569231247
+      TX Struct_52: -5674155819746997661
+      TX Struct_53: -9156902120731912439
+      TX Struct_54: 6453487532837731080
+      TX Struct_55: -5388524612823644440
+      TX Struct_57: 2973229307572537156
+      TX Struct_58: 7791201459673095574
+      TX Struct_6: -3684389700825655485
+      TX Struct_7: -5664187630041763615
+      TX Struct_9: -7037961563414481546
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

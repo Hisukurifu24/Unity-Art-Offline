@@ -10,12 +10,16 @@ public class BarController : MonoBehaviour {
     [SerializeField] private Text exp;
     [SerializeField] private Text gold;
 
+    private void Start() {
+        p = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+    }
+
     private void Update() {
-        healthBar.SetValues(p.GetCurrentStats().hp, p.GetMaxHp());
-        manaBar.SetValues(p.GetCurrentStats().mana, p.GetMaxMana());
-        expBar.SetValues(p.Experience, p.GetMaxExp());
-        lvl.text = "Level: " + p.Level;
-        exp.text = "Exp: " + p.Experience + "/" + p.GetMaxExp();
-        gold.text = "Gold: " + p.Gold;
+        healthBar.SetValues(p.GetCurrentStat(Stat.Health), p.GetMaxHp());
+        manaBar.SetValues(p.GetCurrentStat(Stat.Mana), p.GetMaxMana());
+        expBar.SetValues(p.GetExp(), p.GetMaxExp());
+        lvl.text = "Level: " + p.GetLevel();
+        exp.text = "Exp: " + p.GetExp() + "/" + p.GetMaxExp();
+        gold.text = "Gold: " + p.GetGold();
     }
 }

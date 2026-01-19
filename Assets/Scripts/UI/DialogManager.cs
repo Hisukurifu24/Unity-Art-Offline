@@ -13,11 +13,20 @@ public class DialogManager : MonoBehaviour {
     private Queue<string> sentences;
     private Queue<Dialog> dialogs;
 
-    [SerializeField] private UnityEvent dialogFinished;
+    public UnityEvent onDialogStart;
+    public UnityEvent onDialogEnded;
+    public UnityEvent onDialogInterrupted;
 
     private void Awake() {
         sentences = new Queue<string>();
         dialogs = new Queue<Dialog>();
+    }
+
+    private void Start() {
+        Player player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        onDialogStart.AddListener(player.SetUnavailable);
+        onDialogEnded.AddListener(player.SetAvailable);
+        onDialogInterrupted.AddListener(player.SetAvailable);
     }
 
     public void PromptMessage(string message) {
@@ -30,6 +39,7 @@ public class DialogManager : MonoBehaviour {
             return;
         }
         animator.SetBool("IsOpen", true);
+        onDialogStart.Invoke();
 
         nameText.text = "Message";
 
@@ -45,6 +55,7 @@ public class DialogManager : MonoBehaviour {
             return;
         }
         animator.SetBool("IsOpen", true);
+        onDialogStart.Invoke();
 
         nameText.text = dialog.name;
 
@@ -59,7 +70,7 @@ public class DialogManager : MonoBehaviour {
 
     public void DisplayNextSentence() {
         if (sentences.Count == 0) {
-            dialogFinished.Invoke();
+            onDialogEnded.Invoke();
             NextDialog();
             return;
         }
@@ -72,6 +83,7 @@ public class DialogManager : MonoBehaviour {
     public void NextDialog() {
         animator.SetBool("IsOpen", false);
         if (dialogs.Count == 0) {
+            onDialogEnded.Invoke();
             return;
         }
         StartDialog(dialogs.Dequeue());
@@ -79,6 +91,7 @@ public class DialogManager : MonoBehaviour {
 
     public void Interrupt() {
         animator.SetBool("IsOpen", false);
+        onDialogInterrupted.Invoke();
         dialogs.Clear();
     }
 

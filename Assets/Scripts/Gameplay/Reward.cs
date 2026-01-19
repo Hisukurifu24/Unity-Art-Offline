@@ -4,7 +4,7 @@ using UnityEngine;
 
 [System.Serializable]
 public class Reward {
-    public Item item;
+    public List<Item> items;
     public int gold;
     public int exp;
 }

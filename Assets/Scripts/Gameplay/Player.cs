@@ -1,38 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
-    [SerializeField] GameObject aura;
-    [SerializeField] GameObject shield;
-
     [SerializeField] private List<Item> inventory;
     [SerializeField] private List<Item> bag;
-    //[SerializeField] private Spell[] spellbook;
 
+    [SerializeField] private PlayerStat baseStats;
 
-    [SerializeField] private Stats basic;
-    [SerializeField] private Stats current;
-    [SerializeField] private Stats bonus;
+    private Stats basic;
+    private Stats current;
+    private Stats bonus;
 
     [SerializeField] private float experience = 0;
     [SerializeField] private int level = 1;
     [SerializeField] private int skillPoints = 0;
     [SerializeField] private int gold = 0;
-
-    public string whatIsEnemy;
+    [SerializeField] private string whatIsEnemy;
 
     private float hpReg = 1f;
     private float manaReg = 10f;
 
-    public float Experience => experience;
-    public int Level => level;
-    public int Gold => gold;
-
-    public bool isAnimating;
-    private bool powerUp;
-    private bool defPosition;
+    private bool isAvailable = true;
 
     private Animator animator;
 
@@ -45,11 +36,16 @@ public class Player : MonoBehaviour {
     private void Awake() {
         //spellbook = new Spell[5];
         //LearnSpell<BaseAttack>();
+        basic = new Stats(baseStats);
+        current = new Stats();
+        bonus = new Stats();
         current = basic;
 
+        inventory = new List<Item>();
+        bag = new List<Item>();
         animator = GetComponent<Animator>();
-
         audioSource = GetComponent<AudioSource>();
+
         hit[0] = Resources.Load<AudioClip>("Sounds/GruntVoice01");
         hit[1] = Resources.Load<AudioClip>("Sounds/GruntVoice02");
         death = Resources.Load<AudioClip>("Sounds/DeathVoice");
@@ -58,11 +54,6 @@ public class Player : MonoBehaviour {
     private void Start() {
         StartCoroutine(RegenHealth());
         StartCoroutine(RegenMana());
-    }
-
-    private void Update() {
-        //aura.SetActive(powerUp);
-        //shield.SetActive(defPosition);
     }
 
     private IEnumerator RegenHealth() {
@@ -87,7 +78,7 @@ public class Player : MonoBehaviour {
         Destroy(gameObject, 2);
     }
     private IEnumerator Hit() {
-        audioSource.clip = hit[Random.Range(0, 2)];
+        audioSource.clip = hit[UnityEngine.Random.Range(0, 2)];
         audioSource.Play();
         GetComponent<SpriteRenderer>().color = Color.red;
 
@@ -102,42 +93,44 @@ public class Player : MonoBehaviour {
         float damage = 0;
         switch (type) {
             case Damage.Physical:
-                damage = amount - (defPosition ? current.armor * 2 : current.armor);
+                //damage = amount - (defPosition ? current.Get(Stat.Armor) * 2 : current.Get(Stat.Armor));
+                damage = amount - current.Get(Stat.Armor);
                 break;
             case Damage.Magic:
-                damage = amount - (defPosition ? current.mr * 2 : current.mr);
+                //damage = amount - (defPosition ? current.Get(Stat.MagicResistance) * 2 : current.Get(Stat.MagicResistance));
+                damage = amount - current.Get(Stat.MagicResistance);
                 break;
             case Damage.True:
                 damage = amount;
                 break;
         }
         damage = Mathf.Clamp(damage, amount / 3, float.MaxValue); //Massima riduzione danno: 66%
-        current.hp -= damage;
-        current.hp = Mathf.Clamp(current.hp, 0, GetMaxHp());
-        if (current.hp == 0) {
+        current.Decrease(Stat.Health, damage);
+        current.Set(Stat.Health, Mathf.Clamp(current.Get(Stat.Health), 0, GetMaxHp()));
+        if (current.Get(Stat.Health) == 0) {
             Debug.Log(name + " died");
             Die();
         }
-        defPosition = false;
+        //defPosition = false;
     }
     public void Heal(float amount) {
         amount = Mathf.Clamp(amount, 0, float.MaxValue);
-        current.hp += amount;
-        current.hp = Mathf.Clamp(current.hp, 0, GetMaxHp());
+        current.Increase(Stat.Health, amount);
+        current.Set(Stat.Health, Mathf.Clamp(current.Get(Stat.Health), 0, GetMaxHp()));
     }
 
     public bool UseMana(float amount) {
         amount = Mathf.Clamp(amount, 0, float.MaxValue);
-        if (amount > current.mana) {
+        if (amount > current.Get(Stat.Mana)) {
             return false;
         }
-        current.mana -= amount;
+        current.Decrease(Stat.Mana, amount);
         return true;
     }
     public void RestoreMana(float amount) {
         amount = Mathf.Clamp(amount, 0, float.MaxValue);
-        current.mana += amount;
-        current.mana = Mathf.Clamp(current.mana, 0, GetMaxMana());
+        current.Increase(Stat.Mana, amount);
+        current.Set(Stat.Mana, Mathf.Clamp(current.Get(Stat.Mana), 0, GetMaxMana()));
     }
 
     //Old Spell System
@@ -229,25 +222,44 @@ public class Player : MonoBehaviour {
     //////}
 
     public float GetMaxHp() {
-        return basic.hp + bonus.hp;
+        return (basic + bonus).Get(Stat.Health);
     }
     public float GetMaxMana() {
-        return basic.mana + bonus.mana;
+        return (basic + bonus).Get(Stat.Mana);
+    }
+    public float GetExp() {
+        return experience;
     }
     public float GetMaxExp() {
         return level * 100;
     }
-
-    public Stats GetBaseStats() {
-        return basic;
+    public int GetLevel() {
+        return level;
     }
-    public Stats GetCurrentStats() {
-        return current;
-    }
-    public Stats GetBonusStats() {
-        return bonus;
+    public int GetGold() {
+        return gold;
     }
 
+    public float GetBaseStat(Stat stat) {
+        return basic.Get(stat);
+    }
+    public float GetCurrentStat(Stat stat) {
+        return current.Get(stat);
+    }
+    public float GetBonusStat(Stat stat) {
+        return bonus.Get(stat);
+    }
+
+    public void Buff(Stats buff, float time) {
+        bonus += buff;
+        StartCoroutine(RemoveBuff(buff, time));
+    }
+    private IEnumerator RemoveBuff(Stats buff, float time) {
+        yield return new WaitForSeconds(time);
+        bonus -= buff;
+    }
+
+    /* Old Combat Systen
     public bool Attack(Player enemy) {
         if (!UseMana(50)) {
             return false;
@@ -303,19 +315,6 @@ public class Player : MonoBehaviour {
         return true;
     }
 
-    private bool IsBuildAd() {
-        int ad = 0, ap = 0;
-        foreach (Item i in inventory) {
-            if (i.stats.ad > 0) {
-                ad++;
-            }
-            if (i.stats.ap > 0) {
-                ap++;
-            }
-        }
-        return ad >= ap;
-    }
-
     private IEnumerator AttackAnimation(Player enemy) {
         isAnimating = true;
         Vector3 currentPosition = transform.position; //Save current position
@@ -346,48 +345,14 @@ public class Player : MonoBehaviour {
         yield return new WaitForSeconds(.5f);
         isAnimating = false;
     }
-
+    */
 
     private void UpdateBonusStats() {
         bonus = new Stats();
         foreach (Item i in inventory) {
-            bonus.hp += i.stats.hp;
-            bonus.mana += i.stats.mana;
-            bonus.ad += i.stats.ad;
-            bonus.ap += i.stats.ap;
-            bonus.crit += i.stats.crit;
-            bonus.armor += i.stats.armor;
-            bonus.mr += i.stats.mr;
-            bonus.ats += i.stats.ats;
-            bonus.ms += i.stats.ms;
+            bonus += i.stats;
         }
-        current.hp += bonus.hp;
-        current.mana += bonus.mana;
-        current.ad += bonus.ad;
-        current.ap += bonus.ap;
-        current.crit += bonus.crit;
-        current.armor += bonus.armor;
-        current.mr += bonus.mr;
-        current.ats += bonus.ats;
-        current.ms += bonus.ms;
-    }
-
-    public void AddItem(Item i) {
-        if (i == null) {
-            return;
-        }
-        if (inventory.Count < 6) {
-            inventory.Add(i);
-            UpdateBonusStats();
-            FindObjectOfType<DialogManager>().PromptMessage("Hai ottenuto " + i.itemName + "!\n» stato messo nell'inventario.");
-        }
-        else if (bag.Count < 100) {
-            bag.Add(i);
-            FindObjectOfType<DialogManager>().PromptMessage("Hai ottenuto " + i.itemName + "!\n» stato messo nella borsa.");
-        }
-        else {
-            FindObjectOfType<DialogManager>().PromptMessage("Inventario e borsa pieni!");
-        }
+        current += bonus;
     }
 
     private IEnumerator AddingGold(int amount) {
@@ -448,13 +413,137 @@ public class Player : MonoBehaviour {
     public Item GetBagItem(int i) {
         return i < bag.Count ? bag[i] : null;
     }
+    private bool IsBuildAd() {
+        int ad = 0, ap = 0;
+        foreach (Item i in inventory) {
+            if (i.stats.Get(Stat.AttackDamage) > 0) {
+                ad++;
+            }
+            if (i.stats.Get(Stat.AbilityPower) > 0) {
+                ap++;
+            }
+        }
+        return ad >= ap;
+    }
+    public void AddItem(Item i) {
+        if (i == null) {
+            return;
+        }
+        if (inventory.Count < 6) {
+            inventory.Add(i);
+            UpdateBonusStats();
+            FindObjectOfType<DialogManager>().PromptMessage("Hai ottenuto " + i.itemName + "!\n» stato messo nell'inventario.");
+        }
+        else if (bag.Count < 100) {
+            bag.Add(i);
+            FindObjectOfType<DialogManager>().PromptMessage("Hai ottenuto " + i.itemName + "!\n» stato messo nella borsa.");
+        }
+        else {
+            FindObjectOfType<DialogManager>().PromptMessage("Inventario e borsa pieni!");
+        }
+    }
     public void Swap(int invIndex, int bagIndex) {
-        Item i = bag[bagIndex];
-        bag[bagIndex] = inventory[invIndex];
-        inventory[invIndex] = i;
+        Item i = invIndex < inventory.Count ? inventory[invIndex] : null;
+        Item b = bagIndex < bag.Count ? bag[bagIndex] : null;
+        inventory.Remove(i);
+        bag.Remove(b);
+        if (b)
+            inventory.Add(b);
+        if (i)
+            bag.Add(i);
+    }
+
+    public string WhatIsEnemy() {
+        return whatIsEnemy;
+    }
+
+    public bool IsAvailable() {
+        return isAvailable;
+    }
+    public void SetAvailable() {
+        isAvailable = true;
+    }
+    public void SetUnavailable() {
+        isAvailable = false;
     }
 }
 
+
+[System.Serializable]
+public enum Stat {
+    Health,
+    Mana,
+    AttackDamage,
+    AbilityPower,
+    CriticalChance,
+    Armor,
+    MagicResistance,
+    AttackSpeed,
+    MovementSpeed,
+    Strength,
+    Dexterity,
+    Intelligence
+}
+
+[System.Serializable]
+public class Stats {
+    private Dictionary<Stat, float> values = new Dictionary<Stat, float>();
+
+    public Stats() {
+        foreach (Stat stat in System.Enum.GetValues(typeof(Stat))) {
+            values[stat] = 0;
+        }
+    }
+
+    public Stats(PlayerStat baseStats) {
+        values[Stat.Health] = baseStats.Health;
+        values[Stat.Mana] = baseStats.Mana;
+        values[Stat.AttackDamage] = baseStats.AttackDamage;
+        values[Stat.AbilityPower] = baseStats.AbilityPower;
+        values[Stat.CriticalChance] = baseStats.CriticalChance;
+        values[Stat.Armor] = baseStats.Armor;
+        values[Stat.MagicResistance] = baseStats.MagicResistance;
+        values[Stat.AttackSpeed] = baseStats.AttackSpeed;
+        values[Stat.MovementSpeed] = baseStats.MovementSpeed;
+        values[Stat.Strength] = baseStats.Strength;
+        values[Stat.Dexterity] = baseStats.Dexterity;
+        values[Stat.Intelligence] = baseStats.Intelligence;
+    }
+
+    public static Stats operator +(Stats stat1, Stats stat2) {
+        Stats result = new Stats();
+        foreach (Stat stat in System.Enum.GetValues(typeof(Stat))) {
+            result.Set(stat, stat1.Get(stat) + stat2.Get(stat));
+        }
+        return result;
+    }
+
+    public static Stats operator -(Stats stat1, Stats stat2) {
+        Stats result = new Stats();
+        foreach (Stat stat in System.Enum.GetValues(typeof(Stat))) {
+            result.Set(stat, stat1.Get(stat) - stat2.Get(stat));
+        }
+        return result;
+    }
+
+    public float Get(Stat stat) {
+        return values[stat];
+    }
+
+    public void Set(Stat stat, float value) {
+        values[stat] = value;
+    }
+
+    public void Increase(Stat stat, float amount) {
+        values[stat] += amount;
+    }
+
+    public void Decrease(Stat stat, float amount) {
+        values[stat] -= amount;
+    }
+}
+
+/*
 [System.Serializable]
 public struct Stats {
     public float hp;        //500
@@ -467,6 +556,7 @@ public struct Stats {
     public float ats;       //0.5
     public float ms;        //325
 }
+*/
 
 public enum Damage {
     Physical,

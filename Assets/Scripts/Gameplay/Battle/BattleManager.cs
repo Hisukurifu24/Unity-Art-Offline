@@ -1,3 +1,5 @@
+/*
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -62,7 +64,7 @@ public class BattleManager : MonoBehaviour {
 
         player.SetEnemy(enemy);
         enemy.SetEnemy(player);
-        */
+        //
         turnTimeLeft = defaultTime;
     }
 
@@ -89,7 +91,7 @@ public class BattleManager : MonoBehaviour {
                         Debug.LogError("Something went wrong here, chief");
                         break;
                     }
-                    */
+                    //
                     bool ok = false;
                     if (lastEnemyAction == Action.PowerUp) {
                         ok = enemy.Attack(player);
@@ -139,8 +141,8 @@ public class BattleManager : MonoBehaviour {
                 turn = (turn + 1) % 2;
                 menu2.SetActive(turn == 0);
 
-                float playerSpeed = player.GetCurrentStats().ms * player.GetCurrentStats().ats;
-                float enemySpeed = enemy.GetCurrentStats().ms * enemy.GetCurrentStats().ats;
+                float playerSpeed = player.GetCurrentStats().ms * player.GetCurrentStat(Stat.AttackSpeed);
+                float enemySpeed = enemy.GetCurrentStats().ms * enemy.GetCurrentStat(Stat.AttackSpeed);
                 float timeReduction = turn == 0 ? (enemySpeed - playerSpeed) / 100 : (playerSpeed - enemySpeed) / 100;
                 timeReduction = Mathf.Clamp(timeReduction, 0, defaultTime-0.25f);
                 turnTimeLeft = defaultTime - timeReduction;
@@ -185,8 +187,8 @@ public class BattleManager : MonoBehaviour {
     private void StartFight() {
         currentPhase = Phase.Fight;
 
-        float playerSpeed = player.GetCurrentStats().ats * player.GetCurrentStats().ms;
-        float enemySpeed = enemy.GetCurrentStats().ats * enemy.GetCurrentStats().ms;
+        float playerSpeed = player.GetCurrentStat(Stat.AttackSpeed) * player.GetCurrentStats().ms;
+        float enemySpeed = enemy.GetCurrentStat(Stat.AttackSpeed) * enemy.GetCurrentStats().ms;
 
         turn = playerSpeed > enemySpeed ? 0 : 1;
         menu2.SetActive(turn == 0 ? true : false);
@@ -195,8 +197,8 @@ public class BattleManager : MonoBehaviour {
     }
 
     private IEnumerator TryToRun() {
-        float playerSpeed = player.GetCurrentStats().ats * player.GetCurrentStats().ms;
-        float enemySpeed = enemy.GetCurrentStats().ats * enemy.GetCurrentStats().ms;
+        float playerSpeed = player.GetCurrentStat(Stat.AttackSpeed) * player.GetCurrentStats().ms;
+        float enemySpeed = enemy.GetCurrentStat(Stat.AttackSpeed) * enemy.GetCurrentStats().ms;
         if (bossBattle) {
             battleLog.AddText("Non puoi scappare da questa battaglia!", Color.black);
             yield return new WaitForSeconds(1);
@@ -256,7 +258,7 @@ public class BattleManager : MonoBehaviour {
             //BadActivation
             return;
         }
-        */
+        //
         bool ok = false;
         switch (choice) {
             case 0:
@@ -282,3 +284,4 @@ public class BattleManager : MonoBehaviour {
         menu2.SetActive(false);
     }
 }
+*/

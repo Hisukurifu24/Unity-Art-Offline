@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform follow;
+    private Transform follow;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    private void Start() {
+        follow = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    private void Update() {
+        if (Input.mouseScrollDelta.y > 0 && Camera.main.orthographicSize > 1) {
+            Camera.main.orthographicSize -= 0.5f;
+        }
+        else if (Input.mouseScrollDelta.y < 0 && Camera.main.orthographicSize < 5) {
+            Camera.main.orthographicSize += 0.5f;
+        }
+
         transform.position = new Vector3(follow.position.x, follow.position.y, -10);
     }
 }
